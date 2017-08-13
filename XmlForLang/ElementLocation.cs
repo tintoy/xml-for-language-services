@@ -2,11 +2,11 @@ using System.Xml;
 
 namespace XmlForLang
 {
+    /// <summary>
+    ///     Location information for an XML element.
+    /// </summary>
     public class ElementLocation
         : Location
     {
-        public override XmlNodeType NodeType => XmlNodeType.Element;
-
-        public bool IsEmptyElement { get; set; }
     }
 }

@@ -3,15 +3,39 @@ using System.Xml;
 
 namespace XmlForLang
 {
+    /// <summary>
+    ///     Location information for an XML node.
+    /// </summary>
     public abstract class Location
     {
-        public abstract XmlNodeType NodeType { get; }
+        /// <summary>
+        ///     Create a new <see cref="Location"/>.
+        /// </summary>
+        protected Location()
+        {
+        }
 
-        public string Name { get; set; }
+        /// <summary>
+        ///     The starting position of the XML node.
+        /// </summary>
+        public Position Start { get; internal set; }
 
-        public int Depth { get; set; }
+        /// <summary>
+        ///     The ending position of the XML node.
+        /// </summary>
+        public Position End { get; internal set; }
 
-        public Position Start { get; set; }
-        public Position End { get; set; }
+        /// <summary>
+        ///     The depth of the nearest surrounding element.
+        /// </summary>
+        public int Depth { get; internal set; }
+
+        /// <summary>
+        ///     The name of the node at the location.
+        /// </summary>
+        /// <remarks>
+        ///     For diagnostic purposes only.
+        /// </remarks>
+        internal string Name { get; set; }
     }
 }

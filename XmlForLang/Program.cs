@@ -6,36 +6,33 @@ using System.Collections.Generic;
 
 namespace XmlForLang
 {
-    class Program
+    /// <summary>
+    ///     A quick demo of XML-for-language-services functionality.
+    /// </summary>
+    /// <remarks>
+    ///     One tricky aspect of implementing a language service for XML is that most parsers make it hard to keep track of node locations
+    ///     (e.g. they ignore whitespace that you probably care about, such as the whitespace between attributes).
+    /// 
+    ///     Using a custom XmlTextReader, you can keep track of actual positions in the text and add these as annotations to your XML.
+    /// </remarks>
+    static class Program
     {
+        /// <summary>
+        ///     The main program entry-point.
+        /// </summary>
         static void Main()
         {
             ConfigureLogging();
 
             try
             {
-                const LoadOptions loadOptions = LoadOptions.PreserveWhitespace | LoadOptions.SetBaseUri | LoadOptions.SetLineInfo;
-
-                XDocument document;
-                IReadOnlyList<Location> locations;
-                using (StreamReader reader = File.OpenText("Test.xml"))
-                using (LocatingXmlTextReader xmlReader = new LocatingXmlTextReader(reader))
-                {
-                    document = XDocument.Load(xmlReader, loadOptions);
-                    locations = xmlReader.Locations;
-                }
+                Log.Information("Loading...");
+                XDocument document = LocatingXmlTextReader.LoadWithLocations("Test.xml");
+                Log.Information("Loaded...");
 
                 Log.Information("=======================================");
 
-                foreach (Location location in locations)
-                {
-                    Log.Information("[{NodeType}] {Name} ({StartLine},{StartColumn}-{EndLine},{EndColumn})",
-                        location.NodeType,
-                        location.Name,
-                        location.Start.LineNumber, location.Start.ColumnNumber,
-                        location.End.LineNumber, location.End.ColumnNumber
-                    );
-                }
+                DumpElement(document.Root, depth: 0);
             }
             catch (Exception eUnexpected)
             {
@@ -43,11 +40,63 @@ namespace XmlForLang
             }
         }
 
+        /// <summary>
+        ///     Recursively dump out an element and its attributes.
+        /// </summary>
+        /// <param name="element">
+        ///     The target element.
+        /// </param>
+        /// <param name="depth">
+        ///     The current element depth.
+        /// </param>
+        static void DumpElement(XElement element, int depth)
+        {
+            ElementLocation location = element.Annotation<ElementLocation>();
+
+            Log.Information("{Indent}{Name} ({StartLine},{StartColumn}) to ({EndLine},{EndColumn})",
+                new String(' ', depth * 4),
+                element.Name,
+                location.Start.LineNumber, location.Start.ColumnNumber,
+                location.End.LineNumber, location.End.ColumnNumber
+            );
+
+            foreach (XAttribute attribute in element.Attributes())
+                DumpAttribute(attribute, depth);
+
+            foreach (XElement childElement in element.Elements())
+                DumpElement(childElement, depth + 1);
+        }
+
+        /// <summary>
+        ///     Dump out an attribute.
+        /// </summary>
+        /// <param name="attribute">
+        ///     The target attribute.
+        /// </param>
+        /// <param name="depth">
+        ///     The current element depth.
+        /// </param>
+        static void DumpAttribute(XAttribute attribute, int depth)
+        {
+            AttributeLocation location = attribute.Annotation<AttributeLocation>();
+
+            Log.Information("{Indent}@{Name}='{Value}' ({StartLine},{StartColumn}) to ({EndLine},{EndColumn})",
+                new String(' ', depth * 4 + 4 /* Extra indent for attributes */),
+                attribute.Name,
+                attribute.Value,
+                location.Start.LineNumber, location.Start.ColumnNumber,
+                location.End.LineNumber, location.End.ColumnNumber
+            );
+        }
+
+        /// <summary>
+        ///     Configure logging.
+        /// </summary>
         static void ConfigureLogging()
         {
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .WriteTo.LiterateConsole()
+                .MinimumLevel.Information() // Set this to Verbose if you want to see the parsing process in action
+                .WriteTo.LiterateConsole(outputTemplate: "[{Level:u3}] {Message}{NewLine}{Exception}")
                 .CreateLogger();
         }
     }
