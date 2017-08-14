@@ -1,7 +1,7 @@
 using System;
 using System.Xml;
 
-namespace XmlForLang
+namespace XmlForLanguageServices
 {
     /// <summary>
     ///     Location information for an XML node.
@@ -37,5 +37,22 @@ namespace XmlForLang
         ///     For diagnostic purposes only.
         /// </remarks>
         internal string Name { get; set; }
+
+        /// <summary>
+        ///     Determine whether the location's range contains the specified position.
+        /// </summary>
+        /// <param name="position">
+        ///     The target position.
+        /// </param>
+        /// <returns>
+        ///     <c>true></c>, if the location's start / end range contains the target position; otherwise, <c>false</c>.
+        /// </returns>
+        public bool Contains(Position position)
+        {
+            if (position == null)
+                throw new ArgumentNullException(nameof(position));
+            
+            return position >= Start && position <= End;
+        }
     }
 }

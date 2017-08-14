@@ -4,7 +4,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Collections.Generic;
 
-namespace XmlForLang
+namespace XmlForLanguageServices
 {
     /// <summary>
     ///     A quick demo of XML-for-language-services functionality.

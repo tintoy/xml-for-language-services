@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlForLang", "XmlForLang\XmlForLang.csproj", "{7974DEB2-DC17-4102-932C-82EE2850E9E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlForLanguageServices", "XmlForLanguageServices\XmlForLanguageServices.csproj", "{7974DEB2-DC17-4102-932C-82EE2850E9E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

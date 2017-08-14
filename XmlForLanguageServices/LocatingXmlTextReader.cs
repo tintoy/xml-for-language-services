@@ -6,7 +6,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
 
-namespace XmlForLang
+namespace XmlForLanguageServices
 {
     /// <summary>
     ///     An <see cref="XmlTextReader"/> that captures location information for elements and attributes while reading XML.
@@ -216,13 +216,9 @@ namespace XmlForLang
             else if (NodeType == XmlNodeType.Attribute)
             {
                 // Attribute
-                _locations.Add(new AttributeLocation
-                {
-                    Start = CurrentPosition,
-                    End = CurrentPosition.Move(
-                        columnCount: Name.Length + 2 /* =" */ + Value.Length + 1 /* " */
-                    )
-                });
+                _locations.Add(
+                    AttributeLocation.Create(CurrentPosition, Name, Value)
+                );
             }
             else
             {

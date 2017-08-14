@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace XmlForLang
+namespace XmlForLanguageServices
 {
     /// <summary>
     ///     Location information for an XML element.
