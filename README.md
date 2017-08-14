@@ -13,10 +13,24 @@ Nevertheless, here's an approach that may be _good enough_ for some purposes.
 XDocument document = LocatingXmlTextReader.LoadWithLocations("Test.xml");
 foreach (XElement element in document.DescendantNodes().OfType<XElement>())
 {
-    ElementLocation location = element.Annotation<ElementLocation>();
-    Console.WriteLine
-        ($"Element '{element.Name}' spans ({location.Start.LineNumber},{location.Start.ColumnNumber}) to ({location.End.LineNumber},{location.End.ColumnNumber})"
+    ElementLocation elementLocation = element.Annotation<ElementLocation>();
+    Console.WriteLine(
+        $"Element '{element.Name}' spans ({elementLocation.Start.LineNumber},{elementLocation.Start.ColumnNumber}) to ({elementLocation.End.LineNumber},{elementLocation.End.ColumnNumber})"
     );
+
+    foreach (XAttribute attribute in element.Attributes())
+    {
+        AttributeLocation attributeLocation = attribute.Annotation<AttributeLocation>();
+        Console.WriteLine(
+            $"\tAttribute '{attribute.Name}' spans ({attributeLocation.Start.LineNumber},{attributeLocation.Start.ColumnNumber}) to ({attributeLocation.End.LineNumber},{attributeLocation.End.ColumnNumber})"
+        );
+        Console.WriteLine(
+            $"\tName of attribute '{attribute.Name}' spans ({attributeLocation.NameStart.LineNumber},{attributeLocation.NameStart.ColumnNumber}) to ({attributeLocation.NameEnd.LineNumber},{attributeLocation.NameEnd.ColumnNumber})"
+        );
+        Console.WriteLine(
+            $"\tValue of attribute '{attribute.Name}' spans ({attributeLocation.ValueStart.LineNumber},{attributeLocation.ValueStart.ColumnNumber}) to ({attributeLocation.ValueEnd.LineNumber},{attributeLocation.ValueEnd.ColumnNumber})"
+        );
+    }
 }
 ```
 
